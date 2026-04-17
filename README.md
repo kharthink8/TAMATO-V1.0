@@ -2,90 +2,91 @@
 
 WorkloadHQ is a workload-first task & project management web app for 15–30 team members running multiple projects.
 
-## What’s implemented (so far)
+This demo workspace is tailored for an in-house **Branding & Digital Marketing** department: brand initiatives, campaign launches, social ops, paid performance, SEO, email/CRM, web updates, approvals, and reporting.
+
+## What’s implemented
 - Auth: demo login via Credentials (password `demo`)
-- Workspace dashboard + portfolio
-- Project views: Table, Board (DnD status), Workload (capacity vs assigned effort)
-- My Work: Inbox/Today/Upcoming + focus timer (client-only MVP)
-- Prisma v7 + Postgres with a realistic seeded dataset
+- Views: Board, Table, Calendar, Timeline, Gantt, Workload
+- My Work: Inbox/Today/Upcoming + focus timer (MVP)
+- Org hierarchy: Departments, teams, reporting managers (Admin/Super Admin)
+- Approvals: Submit → approve/reject → close (with approval chain + audit log)
+- Prisma + Postgres with a realistic seeded dataset
 - Product docs/specs: `docs/`
 
 ## Local setup
-### 0) Enable local Node.js (required if you don’t have npm installed)
-This workspace includes a local Node toolchain under `../.tools/`. In a new terminal:
+### Prerequisites
+- macOS + **Docker Desktop** (must be running)
+- No global Node/npm required (this repo ships a local Node toolchain in `../.tools/`)
+
+### 1) Enable local Node/npm
 ```bash
 source scripts/use-local-node.zsh
 ```
 
-### 1) Start Postgres
+### 2) Start Postgres (Docker)
 ```bash
 npm run db:up
 ```
 
 Postgres runs on port `55432` (to avoid conflicts with local Postgres).
 
-### 2) Configure env
+### 3) Configure env
 ```bash
 cp .env.example .env
 ```
 
-### 3) Migrate + seed
+### 4) Reset + seed demo data
 ```bash
-npx prisma migrate dev
+npm run db:reset
 npm run db:seed
 ```
 
-### 4) Run the app
+### 5) Run the app
 ```bash
 npm run dev
 ```
-
-cd '/Users/karthiv/Desktop/MODDWELL/SELF STUDY/TASK MANAGEMENT TOOL/workloadhq'
-source scripts/use-local-node.zsh
-npm -v
-npx -v
-npm run db:up
-cp .env.example .env
-npx prisma migrate dev
-npm run db:seed
-npm run dev
-
-
 
 Open `http://localhost:3000`.
 
 ## Demo login
-- Use any seeded email from Admin → Users (e.g. `*.@moddwell.example`)
 - Password is always `demo`
+- `/login` includes a demo-user dropdown (no copy/paste needed)
+- Approvers can use `/approvals` for their queue
+- Admin/Super Admin: `/admin/users`, `/admin/org`, `/admin/audit`
+
+### Seeded demo users
+| Name | Email | Role | Team |
+|---|---|---|---|
+| Aisha Raman | aisha.raman@moddwell.example | Super Admin | Brand Strategy Team |
+| Dinesh Kumar | dinesh.kumar@moddwell.example | Admin | Operations & Web Team |
+| Karthik Menon | karthik.menon@moddwell.example | Department Head | Brand Strategy Team |
+| Rhea Varma | rhea.varma@moddwell.example | Department Head | Creative Studio |
+| Sanjana Iyer | sanjana.iyer@moddwell.example | Department Head | Content & Social Team |
+| Vivek Nair | vivek.nair@moddwell.example | Department Head | Performance & Lifecycle Team |
+| Ananya Rao | ananya.rao@moddwell.example | Team Lead | Operations & Web Team |
+| Nila Krishnan | nila.krishnan@moddwell.example | Team Member | Brand Strategy Team |
+| Devika Shah | devika.shah@moddwell.example | Team Member | Creative Studio |
+| Arun Joel | arun.joel@moddwell.example | Team Member | Creative Studio |
+| Meera Doss | meera.doss@moddwell.example | Team Member | Creative Studio |
+| Ishaan Paul | ishaan.paul@moddwell.example | Team Member | Content & Social Team |
+| Pranav Bedi | pranav.bedi@moddwell.example | Team Member | Content & Social Team |
+| Harini Joseph | harini.joseph@moddwell.example | Team Member | Content & Social Team |
+| Sneha Kapoor | sneha.kapoor@moddwell.example | Team Member | Performance & Lifecycle Team |
+| Farah Ali | farah.ali@moddwell.example | Team Member | Performance & Lifecycle Team |
+| Rahul Deshpande | rahul.deshpande@moddwell.example | Team Member | Performance & Lifecycle Team |
+| Keerthi Soman | keerthi.soman@moddwell.example | Team Member | Operations & Web Team |
+| Zoya Khan | zoya.khan@moddwell.example | Team Member | Operations & Web Team |
+| Naveen Raj | naveen.raj@moddwell.example | Team Member | Operations & Web Team |
+
+## Troubleshooting
+- **`npm: command not found`**: run `source scripts/use-local-node.zsh` (it must be sourced, not executed).
+- **Docker errors** like `failed to connect ... docker.sock ... no such file`: Docker Desktop isn’t running yet. Start it (`open -a Docker`), wait until it’s “Running”, then re-run `npm run db:up`.
+- **`ERR_CONNECTION_REFUSED` on `http://localhost:3000`**: the web server isn’t running. Start it with `npm run dev` and keep that terminal open.
+- **Sign-in “Server configuration error”**: open `http://localhost:3000/api/health` and ensure it returns `ok: true`. If not, verify `.env` (`DATABASE_URL`, `NEXTAUTH_SECRET`), ensure Postgres is running, then restart `npm run dev`.
 
 ## Docs
 See `docs/` for PRD, architecture, ERD, API contract, workload spec, and test plan.
 
 ## Notes
-- Prisma v7 uses a Postgres driver adapter (`@prisma/adapter-pg`). Connection URL lives in `prisma.config.ts`.
-- Calendar OAuth is stubbed in MVP; seeded calendar connections/events are included for UI overlays later.
-
-
-demo users email id and role password: demo
-Here are the seeded demo logins (email → role):
-
-mohammad-crist@moddwell.example → ADMIN
-brionna-hilll@moddwell.example → PROJECT_MANAGER
-claudia-leffler@moddwell.example → PROJECT_MANAGER
-laury-aufderhar-phd@moddwell.example → PROJECT_MANAGER
-bryan-barton-i@moddwell.example → TEAM_LEAD
-joel-bayer@moddwell.example → TEAM_LEAD
-tracey-schowalter-haag@moddwell.example → TEAM_LEAD
-bobbie-nienow@moddwell.example → TEAM_MEMBER
-charlotte-schowalter@moddwell.example → TEAM_MEMBER
-delmer-roob@moddwell.example → TEAM_MEMBER
-dr.-christelle-lindgren@moddwell.example → TEAM_MEMBER
-hope-shields@moddwell.example → TEAM_MEMBER
-john-denesik-dds@moddwell.example → TEAM_MEMBER
-keara-kunde@moddwell.example → TEAM_MEMBER
-laron-bogisich@moddwell.example → TEAM_MEMBER
-lew-bergnaum@moddwell.example → TEAM_MEMBER
-lon-kozey@moddwell.example → TEAM_MEMBER
-misael-blanda@moddwell.example → TEAM_MEMBER
-miss-caroline-blanda-jr.@moddwell.example → TEAM_MEMBER
-mrs.-desiree-schumm@moddwell.example → TEAM_MEMBER
+- Prisma uses a Postgres driver adapter (`@prisma/adapter-pg`). Connection URL lives in `prisma.config.ts`.
+- Calendar OAuth is stubbed in MVP; seeded calendar connections/events are included for UI overlays.
