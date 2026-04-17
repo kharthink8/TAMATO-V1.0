@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: workloadhq-postgres
+    environment:
+      POSTGRES_DB: workloadhq
+      POSTGRES_USER: workloadhq
+      POSTGRES_PASSWORD: workloadhq
+    ports:
+      - "55432:5432"
+    volumes:
+      - workloadhq_pgdata:/var/lib/postgresql/data
+
+volumes:
+  workloadhq_pgdata:
